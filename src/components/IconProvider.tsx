@@ -102,4 +102,3 @@ export const getAvailableIcons = (type: IconType): string[] => {
       return [];
   }
 };
-
