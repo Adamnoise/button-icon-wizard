@@ -9,7 +9,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Icon, IconProps, IconType } from "./IconProvider";
 
-// Kiterjesztett Props interfész az ActionButton komponenshez
+// Extended Props interface for ActionButton component
 interface ActionButtonProps {
   iconName: string;
   iconType?: IconType;
@@ -22,7 +22,7 @@ interface ActionButtonProps {
 
 const ActionButton = ({ 
   iconName, 
-  iconType = 'lucide',
+  iconType = 'heroicons-solid',
   label, 
   onClick, 
   variant, 
@@ -74,9 +74,9 @@ interface ActionButtonsProps {
   onDelete?: () => void;
   disabledActions?: Array<"view" | "edit" | "approve" | "delete">;
   className?: string;
-  // Új prop az ikonstílus kezelésére
+  // Icon style prop
   iconType?: IconType;
-  // Icon pack-specifikus ikonnevek
+  // Icon pack-specific icon names
   viewIcon?: string;
   editIcon?: string;
   approveIcon?: string; 
@@ -90,11 +90,11 @@ export const ActionButtons = ({
   onDelete, 
   disabledActions = [],
   className,
-  iconType = 'lucide',
-  viewIcon = 'Eye',
-  editIcon = 'Edit',
-  approveIcon = 'Check',
-  deleteIcon = 'Trash'
+  iconType = 'heroicons-solid',
+  viewIcon = 'EyeIcon',
+  editIcon = 'PencilIcon',
+  approveIcon = 'CheckIcon',
+  deleteIcon = 'TrashIcon'
 }: ActionButtonsProps) => {
   return (
     <div className={cn("flex items-center gap-3", className)}>
