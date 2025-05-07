@@ -1,6 +1,5 @@
 
 import React from "react";
-import { Eye, Edit, Check, Trash } from "lucide-react";
 import { Tooltip } from "@/components/ui/tooltip";
 import { 
   TooltipContent, 
@@ -8,9 +7,12 @@ import {
   TooltipTrigger 
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { Icon, IconProps, IconType } from "./IconProvider";
 
+// Kiterjesztett Props interfész az ActionButton komponenshez
 interface ActionButtonProps {
-  icon: React.ReactNode;
+  iconName: string;
+  iconType?: IconType;
   label: string;
   onClick: () => void;
   variant: "view" | "edit" | "approve" | "delete";
@@ -19,7 +21,8 @@ interface ActionButtonProps {
 }
 
 const ActionButton = ({ 
-  icon, 
+  iconName, 
+  iconType = 'lucide',
   label, 
   onClick, 
   variant, 
@@ -53,7 +56,7 @@ const ActionButton = ({
             className={getButtonStyles()}
             aria-label={label}
           >
-            {icon}
+            <Icon icon={iconName} type={iconType} />
           </button>
         </TooltipTrigger>
         <TooltipContent side="bottom">
@@ -71,6 +74,13 @@ interface ActionButtonsProps {
   onDelete?: () => void;
   disabledActions?: Array<"view" | "edit" | "approve" | "delete">;
   className?: string;
+  // Új prop az ikonstílus kezelésére
+  iconType?: IconType;
+  // Icon pack-specifikus ikonnevek
+  viewIcon?: string;
+  editIcon?: string;
+  approveIcon?: string; 
+  deleteIcon?: string;
 }
 
 export const ActionButtons = ({ 
@@ -79,13 +89,19 @@ export const ActionButtons = ({
   onApprove, 
   onDelete, 
   disabledActions = [],
-  className 
+  className,
+  iconType = 'lucide',
+  viewIcon = 'Eye',
+  editIcon = 'Edit',
+  approveIcon = 'Check',
+  deleteIcon = 'Trash'
 }: ActionButtonsProps) => {
   return (
     <div className={cn("flex items-center gap-3", className)}>
       {onView && (
         <ActionButton 
-          icon={<Eye size={16} />} 
+          iconName={viewIcon}
+          iconType={iconType}
           label="View" 
           onClick={onView} 
           variant="view" 
@@ -95,7 +111,8 @@ export const ActionButtons = ({
       
       {onEdit && (
         <ActionButton 
-          icon={<Edit size={16} />} 
+          iconName={editIcon}
+          iconType={iconType}
           label="Edit" 
           onClick={onEdit} 
           variant="edit"
@@ -105,7 +122,8 @@ export const ActionButtons = ({
       
       {onApprove && (
         <ActionButton 
-          icon={<Check size={16} />} 
+          iconName={approveIcon}
+          iconType={iconType}
           label="Approve" 
           onClick={onApprove} 
           variant="approve"
@@ -115,7 +133,8 @@ export const ActionButtons = ({
       
       {onDelete && (
         <ActionButton 
-          icon={<Trash size={16} />} 
+          iconName={deleteIcon}
+          iconType={iconType}
           label="Delete" 
           onClick={onDelete} 
           variant="delete"
