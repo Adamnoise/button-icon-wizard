@@ -1,11 +1,11 @@
 
 import React from 'react';
 import * as LucideIcons from 'lucide-react';
-import * as HeroiconsSolid from '@heroicons/react/24/solid';
-import * as HeroiconsOutline from '@heroicons/react/24/outline';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as FaIcons from '@fortawesome/free-solid-svg-icons';
 import * as MuiIcons from '@mui/icons-material';
+import * as HeroiconsOutline from '@heroicons/react/24/outline';
+import * as HeroiconsSolid from '@heroicons/react/24/solid';
 
 // Támogatott ikontípusok
 export type IconType = 'lucide' | 'heroicons-solid' | 'heroicons-outline' | 'fontawesome' | 'material';
