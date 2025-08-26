@@ -30,8 +30,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 
-import { FigmaApiClient } from '@/services/figma-api';
-import { FigmaApiResponse } from '@/types/figma';
+import { FigmaApiService } from '../../services/figmaApi';
+import { FigmaFile } from '../../types/figma';
 import { OptimizedFigmaInfoDisplay } from './OptimizedFigmaInfoDisplay';
 
 // --- Zod validációs séma aszinkron API kulcs validációval ---
@@ -49,7 +49,8 @@ const figmaFormSchema = z.object({
     .min(1, 'API kulcs szükséges')
     .refine(async (key) => {
       // Aszinkron validáció a kulcs formátumára és/vagy érvényességére
-      return FigmaApiClient.validateApiKey(key);
+      const service = new FigmaApiService();
+      return service.validateToken(key);
     }, 'Érvénytelen Figma API kulcs formátum'),
 });
 
@@ -111,7 +112,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFileRead, disabled }) => {
 export function FigmaGenerator() {
   const [activeTab, setActiveTab] = useState<'url' | 'upload'>('url');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [figmaData, setFigmaData] = useState<FigmaApiResponse | null>(null);
+  const [figmaData, setFigmaData] = useState<FigmaFile | null>(null);
   const [fileKey, setFileKey] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [abortController, setAbortController] = useState<AbortController | null>(null);
@@ -129,8 +130,8 @@ export function FigmaGenerator() {
   const validateApiKeyAsync = useCallback(
     async (key: string) => {
       try {
-        const valid = await FigmaApiClient.validateApiKey(key);
-        return valid;
+        const service = new FigmaApiService();
+        return service.validateToken(key);
       } catch {
         return false;
       }
@@ -151,19 +152,22 @@ export function FigmaGenerator() {
 
       try {
         // API kulcs ellenőrzése aszinkron módon (ha szükséges)
-        const apiClient = new FigmaApiClient(data.apiKey);
+        const apiClient = new FigmaApiService(data.apiKey);
 
         // API kapcsolat validálása
-        const isValidConnection = await apiClient.validateConnection(controller.signal);
+        const isValidConnection = await apiClient.testConnection();
         if (!isValidConnection) {
           throw new Error('Érvénytelen API kulcs vagy nincs hozzáférés a Figma API-hoz');
         }
 
         // Fájl kulcs kinyerése
-        const extractedFileKey = FigmaApiClient.extractFileKey(data.figmaUrl);
+        const extractedFileKey = apiClient.extractFileId(data.figmaUrl);
+        if (!extractedFileKey) {
+          throw new Error('Érvénytelen Figma URL');
+        }
 
         // Figma fájl lekérése
-        const figmaFileData = await apiClient.getFile(extractedFileKey, controller.signal);
+        const figmaFileData = await apiClient.getFile(extractedFileKey);
 
         if (!figmaFileData.document) {
           throw new Error('A Figma fájl nem tartalmaz document struktúrát');
@@ -279,7 +283,7 @@ export function FigmaGenerator() {
           aria-describedby="form-error"
           noValidate
         >
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <Tabs value={activeTab} onValueChange={(value: 'url' | 'upload') => setActiveTab(value)}>
             <TabsList className="grid w-full grid-cols-2" role="tablist">
               <TabsTrigger
                 value="url"

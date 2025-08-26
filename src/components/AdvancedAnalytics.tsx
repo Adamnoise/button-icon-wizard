@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { BarChart3, PieChart, TrendingUp, Target, Zap, Users, Clock, Award } from 'lucide-react';
+import { BarChart3, PieChart, TrendingUp, Target, Zap, Users, Clock, Award, CheckCircle } from 'lucide-react';
 import { ConversionResults } from '../App';
 
 interface AnalyticsData {

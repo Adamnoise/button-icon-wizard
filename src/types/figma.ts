@@ -346,12 +346,16 @@ export interface FigmaVectorPath {
 
 // Conversion and generation types
 export interface ConversionConfig {
-  framework: 'react' | 'vue' | 'angular' | 'svelte' | 'vanilla';
+  framework: 'react' | 'vue' | 'angular' | 'svelte' | 'vanilla' | 'html';
   cssFramework: 'tailwind' | 'styled-components' | 'emotion' | 'css-modules' | 'vanilla';
   typescript: boolean;
   responsive: boolean;
   optimizeImages: boolean;
   extractTokens: boolean;
+  accessibility?: boolean;
+  optimization?: boolean;
+  semanticHtml?: boolean;
+  componentExtraction?: boolean;
 }
 
 export interface GeneratedCode {
@@ -391,17 +395,65 @@ export interface FigmaFileResponse extends FigmaApiResponse {
   branches?: FigmaBranch[];
 }
 
-// Error Types
-export class FigmaApiError extends Error {
-  constructor(
-    message: string,
-    public status: number,
-    public response?: any
-  ) {
-    super(message);
-    this.name = 'FigmaApiError';
-  }
+// Legacy compatibility types  
+export interface GeneratedComponent extends GeneratedCode {
+  // Legacy alias for GeneratedCode
+  id?: string;
+  name?: string;
+  typescript?: boolean;
+  metadata?: ComponentMetadata;
+  accessibility?: AccessibilityReport;
+  responsive?: ResponsiveBreakpoints;
 }
+
+export interface ComponentMetadata {
+  id: string;
+  name: string;
+  type: string;
+  componentType?: string;
+  complexity?: string;
+  estimatedAccuracy?: number;
+  generationTime?: number;
+  dependencies?: string[];
+  figmaNodeId?: string;
+  isBaseComponent?: boolean;
+  variationType?: string;
+  extendsComponent?: string;
+  props?: Record<string, any>;
+  children?: ComponentMetadata[];
+}
+
+export interface AccessibilityReport {
+  issues: Array<{
+    type: string;
+    message: string;
+    element?: string;
+    fix?: string;
+  }>;
+  score: number;
+  suggestions: string[];
+  wcagCompliance?: string;
+}
+
+export interface ResponsiveBreakpoints {
+  mobile: string;
+  tablet: string;
+  desktop: string;
+  hasResponsiveDesign?: boolean;
+}
+
+export interface ProcessingPhase {
+  id: string;
+  name: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed' | 'error';
+  progress: number | string;
+  error?: string;
+}
+
+// Type aliases for compatibility
+export type Color = FigmaColor;
+export type Paint = FigmaPaint;
+export type TypeStyle = FigmaTypeStyle;
 
 export const DEFAULT_CONVERSION_CONFIG: ConversionConfig = {
   framework: 'react',
@@ -410,4 +462,5 @@ export const DEFAULT_CONVERSION_CONFIG: ConversionConfig = {
   responsive: true,
   optimizeImages: true,
   extractTokens: true,
+  accessibility: true,
 };

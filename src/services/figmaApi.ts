@@ -1,4 +1,15 @@
-import { FigmaFile, FigmaApiError, FigmaFileResponse } from '../types/figma';
+import { FigmaFile, FigmaFileResponse } from '../types/figma';
+
+export class FigmaApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+    public response?: any
+  ) {
+    super(message);
+    this.name = 'FigmaApiError';
+  }
+}
 
 export class FigmaApiService {
   private apiToken: string = '';
